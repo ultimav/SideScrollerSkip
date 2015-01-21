@@ -43,7 +43,7 @@ class GameScene: SKScene {
         bg = SKSpriteNode(imageNamed: "bg_\(bgNum)")
         bg.name = "bg"
         bg.zPosition = 1.0
-        scene.addChild(bg)
+        addChild(bg)
     }
     
     func loadLevelType() {
@@ -52,13 +52,13 @@ class GameScene: SKScene {
         levelType.name = "level_type"
         levelType.position.y = -140
         levelType.zPosition = 2.0
-        scene.addChild(levelType)
+        addChild(levelType)
     }
     
     func loadMan() {
         loadManTextures()
         man.position.y -= man.size.height/2
-        man.position.x = -(scene.size.width/2) + man.size.width * 2
+        man.position.x = -(size.width/2) + man.size.width * 2
         man.zPosition = 3.0
         addChild(man)
     }
@@ -92,8 +92,10 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        if event.allTouches().count == 1 {
-            let location = touches.anyObject().locationInNode(self)
+        //if event.allTouches().count == 1 {
+        if (touches.count == 1) {
+           let touch = touches.anyObject() as UITouch
+           let location = touch.locationInNode(self.parent)
             if location.x > 0 {
                 moveMan("right")
             } else {
@@ -110,11 +112,16 @@ class GameScene: SKScene {
         man.removeAllActions()
     }
     
-    override func touchesEnded(touches: NSSet!, withEvent event: UIEvent!) {
+    override func touchesEnded(touches: NSSet, withEvent event: UIEvent) {
         cancelMoves()
     }
     
-    init(size: CGSize) {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder) is not used in this app")
+    }
+    
+    override init(size: CGSize) {
+        
         self.currentLevel = 0
         self.currentLevelData = [:]
         self.levels = Levels()
@@ -122,7 +129,9 @@ class GameScene: SKScene {
         self.man = SKSpriteNode(texture: SKTexture(imageNamed: "run_0"))
         self.man.name = "man"
         self.levelType = SKSpriteNode()
+ 
         super.init(size: size)
+
     }
     
     func cleanScreen() {
@@ -161,9 +170,9 @@ class GameScene: SKScene {
         }
         
         if manLeft {
-            man.position.x -= manSpeed
+            man.position.x -= CGFloat(manSpeed)
         } else if manRight {
-            man.position.x += manSpeed
+            man.position.x += CGFloat(manSpeed)
         }
     }
    
